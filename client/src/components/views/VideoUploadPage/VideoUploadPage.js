@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { Typography, Button, Form, message, Input, Icon } from 'antd'
 import Dropzone from 'react-dropzone'
+import Axios from 'axios'
 
 const { TextArea } = Input
 const { Title } = Typography
@@ -23,6 +24,9 @@ function VideoUploadPage() {
     const [Description, setDescription] = useState("")
     const [Private, setPrivate] = useState(0)
     const [Category, setCategory] = useState("Film & Animation")
+    const [FilePath, setFilePath] = useState("")
+    const [Duration, setDuration] = useState("")
+    const [ThumbnailPath, setThumbnailPath] = useState("")
 
     const onTitleChange = (e) => {
         setVideoTitle(e.currentTarget.value)
@@ -51,6 +55,25 @@ function VideoUploadPage() {
         Axios.post('/api/video/uploadfiles', formData, config)
         .then(res => {
             if(res.data.success) {
+
+                let variable = {
+                    url:res.data.url,
+                    fileName: res.data.fileName
+                }
+
+                setFilePath(res.data.url)
+
+                Axios.post('/api/video/thumbnail', variable)
+                .then(res => {
+                    if(res.data.success) {
+
+                        setDuration(res.data.fileDuration)
+                        setThumbnailPath(res.data.res.data.url)
+
+                    } else {
+                        alert('썸네일 생성에 실패했습니다.')
+                    }
+                })
 
             } else {
                 alert('비디오 업로드를 실패했습니다.')
@@ -83,9 +106,13 @@ function VideoUploadPage() {
                     </Dropzone>
 
                     {/* Thumbnail */}
+                    {ThumbnailPath && 
                     <div>
-                        <img src alt />
+                        <img src={`http://locathost:5000/%{ThumbnailPath}`} alt="thumbnail" />
                     </div>
+                    }
+                    
+
                 </div>
                 
                 <br/>
