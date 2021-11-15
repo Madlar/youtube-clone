@@ -16,7 +16,7 @@ const videoSchema = mongoose.Schema({
     privacy: {
         type: Number
     },
-    filePaht: {
+    filePath: {
         type: String
     },
     category: {

@@ -17,6 +17,7 @@ body {
   line-height: 1.5;
   color: #24292e;
   background-color: #fff;
+  overflow-y: scroll; /* 스크롤이 생겼다 사라졌다가 반복되는 증상이 있어서 넣음 */
 }
 
 .app {
