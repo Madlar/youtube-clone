@@ -31,15 +31,51 @@ function Subscribe(props) {
 
     }, [])
 
+    const onSubscribe =() => {
+
+        let subscribeVariable = {
+            userTo: props.userTo,
+            userFrom: props.userFrom
+        }
+
+        //이미 구독중
+        if(Subscribed) {
+
+            Axios.post('/api/subscribe/unSubscribe', subscribeVariable)
+            .then(res => {
+                if(res.data.success) {
+                    setSubscribeNumber(SubscribeNumber - 1)
+                    setSubscribed(!Subscribed)
+                } else {
+                    alert('구독 취소 하는데 실패했습니다.')
+                }
+            })
+
+        // 구독 중이 아닐 때
+        } else {
+
+            Axios.post('/api/subscribe/subscribe', subscribeVariable)
+            .then(res => {
+                if(res.data.success) {
+                    setSubscribeNumber(SubscribeNumber + 1)
+                    setSubscribed(!Subscribed)
+                } else {
+                    alert('구독 하는데 실패했습니다.')
+                }
+            })
+
+        }
+    }
+
     return (
         <div>
             <button
                 style={{
-                    backgroundColor: `${Subscribe ? '#CC0000' : '#AAAAAA'}`, borderRadius: '4px',
+                    backgroundColor: `${Subscribed ? '#AAAAAA' : '#CC0000'}`, borderRadius: '4px',
                     color: 'white', padding: '10px 16px',
                     fontWeight: '500', fontSize: '1rem', textTransform: 'uppercase'
                 }}
-                onClick
+                onClick={onSubscribe}
             >
                 {SubscribeNumber} {Subscribed ? 'Subscribed' : 'Subscribe'}
             </button>
